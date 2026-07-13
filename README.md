@@ -236,7 +236,7 @@ Arquitetura em 4 camadas — a mesma da referência complementar, adaptada a ale
 
 ### 3.1 A malha, em Blumenau de verdade
 
-![Topologia da malha](outputs/figures/fig2_topologia_mesh.png)
+![Topologia da malha](outputs/outputs/figures/fig2_topologia_mesh.png)
 
 | Nó | Local | Papel | Sensor | Coordenada | Antena |
 |---|---|---|---|---|---|
@@ -342,7 +342,7 @@ Ambas as APIs são **abertas e sem chave** — o avaliador reproduz a coleta int
 
 ### 5.2 O que a cadeia produziu
 
-![Hidrograma e alertas](outputs/figures/fig1_hidrograma_alertas.png)
+![Hidrograma e alertas](outputs/outputs/figures/fig1_hidrograma_alertas.png)
 
 **Payloads:** 1.297 gerados, **1.297 válidos, 0 rejeitados** contra o JSON Schema.
 
@@ -355,7 +355,7 @@ Ambas as APIs são **abertas e sem chave** — o avaliador reproduz a coleta int
 
 As 110 amostras em `alert`/`critical` vêm **todas do nó da Prainha**  nenhuma da chuva. É a consequência direta da regra descrita em §3.2.
 
-![Timeline de risco](outputs/figures/fig5_timeline_risco.png)
+![Timeline de risco](outputs/outputs/figures/fig5_timeline_risco.png)
 
 A Fig. 5 mostra isso visualmente: os quatro pluviômetros oscilam entre verde e amarelo; só a faixa do rio (linha de baixo) entra em laranja e vermelho.
 
@@ -374,7 +374,7 @@ Trajetória do rio ao longo do evento (`outputs/payloads.jsonl`):
 
 ### 5.3 Rádio e malha
 
-![Métricas da malha](outputs/figures/fig4_metricas_mesh.png)
+![Métricas da malha](outputs/outputs/figures/fig4_metricas_mesh.png)
 
 **Rádio (LongFast: SF11, BW 250 kHz, CR 4/5, 22 dBm):**
 
