@@ -1,11 +1,13 @@
 # Americas TechGuard — Período 8
 ## Integração LoRa/Meshtastic, JSON e alertas ambientais para dispositivos móveis
 
-**Rosemeri Borges** — Centro Universitário SENAI/SC, Campus Florianópolis
+**Rosemeri Borges** — Centro Universitário SENAI/SC, Campus Florianópolis 
+
 Orientação: Prof. Valério Piana · Prof. Lucas Lacerda · Prof. Alex Salazar
+
 Período: 08/07/2026 – 18/07/2026 · Eixo: Sistemas Embarcados, LoRa, Meshtastic, LoRaWAN, JSON, IoT
 
-**Trilha escolhida: B — software-only / simulação**, com o firmware ESP32 e a configuração de rádio já escritos para a Trilha A (ver [`hardware/`](hardware/)). Estou em Florianópolis; o hardware está em Joinville. Nada aqui depende de placa, mas tudo foi feito para encaixar na placa sem reescrita — o payload de fio produzido pelo `.ino` é decodificado byte a byte pelo código Python.
+**Trilha escolhida: B — software-only / simulação**, com o firmware ESP32 e a configuração de rádio já escritos para a Trilha A (ver [`hardware/`](hardware/)). Estou no Paraná; o hardware está em Joinville. Nada aqui depende de placa, mas tudo foi feito para encaixar na placa sem reescrita, o payload de fio produzido pelo `.ino` é decodificado byte a byte pelo código Python.
 
 ---
 
@@ -21,7 +23,7 @@ O pipeline foi executado sobre a **sequência de cheias de outubro de 2023**, o 
 
 **1. O JSON legível não passa pelo rádio.** O payload canônico ATG-ENV tem **669 B** minificado. O `Data.payload` do Meshtastic aceita **233 B**. Foi preciso projetar um formato de fio: **ATG-C1-BIN, 23 bytes** — 29× menor, sem perda de informação útil.
 
-**2. O mesh não é enfeite.** Em topologia estrela (o que o LoRaWAN de Zakaria et al. faz), o nó de Vila Itoupava — 18,4 km do gateway — entrega **52,7%** dos pacotes. Com managed flooding a 3 saltos, entrega **100%**. PDR global: 90,4% → 100%.
+**2. O mesh não é enfeite.** Em topologia estrela (o que o LoRaWAN de Zakaria et al. faz), o nó de Vila Itoupava — 18,4 km do gateway, entrega **52,7%** dos pacotes. Com managed flooding a 3 saltos, entrega **100%**. PDR global: 90,4% → 100%.
 
 **3. A cota derivada bateu com a cheia real.** O mapeamento vazão→cota, construído sobre 10.756 dias de climatologia e sem nunca ver o evento, produziu pico de **9,93 m**. O pico observado em Blumenau em outubro/2023 foi de **10,76 m**. Erro de **0,83 m** numa cheia de dez metros.
 
@@ -55,7 +57,7 @@ O pipeline foi executado sobre a **sequência de cheias de outubro de 2023**, o 
 
 | Elemento do artigo | O que fiz com ele |
 |---|---|
-| **Algoritmo 1**: classifica por nível **e por taxa de variação** (cm/min) | Reaproveitado como núcleo do motor de risco (`risk.py`), mas com a taxa em **cm/h** — a escala útil de um rio de porte, não de um canal urbano |
+| **Algoritmo 1**: classifica por nível **e por taxa de variação** (cm/min) | Reaproveitado como núcleo do motor de risco (`risk.py`), mas com a taxa em **cm/h**, a escala útil de um rio de porte, não de um canal urbano |
 | 4 níveis de risco (safe / alert / cautious / dangerous) | **Adaptado**: em vez dos limiares de bancada (50/100/150 cm), uso a **escada oficial do AlertaBlu** (3/4/6/8 m) |
 | Eq. 1 e 2: `D(t)=t·Cs/2`, `Nível = Dmax − D(t)` | Implementadas literalmente no firmware ESP32 (`hardware/esp32_atg_node/atg_node.ino`) |
 | Métricas RSSI, SNR, PDR e atraso (SF7 vs SF12) | São exatamente as métricas que o simulador de malha reporta |
@@ -73,10 +75,10 @@ O pipeline foi executado sobre a **sequência de cheias de outubro de 2023**, o 
 - A **arquitetura de 4 camadas** é a espinha do meu pipeline (§3).
 - O **padrão do nó-ponte** (LoRa ↔ Wi-Fi ↔ MQTT/JSON) é o que o meu gateway `ATG-BLU-GW` faz.
 - O comportamento do **managed flooding** (cache de ID, back-off inversamente proporcional ao SNR, `hop_limit`) foi implementado em `mesh_sim.py`.
-- A medida de 2,47 km serve como **ponto de validação** do meu modelo de propagação (§5.4) — não de ajuste: o modelo é um log-distância padrão e *acerta* a medida com erro de 0,6 dB.
+- A medida de 2,47 km serve como **ponto de validação** do meu modelo de propagação (§5.4) não de ajuste: o modelo é um log-distância padrão e *acerta* a medida com erro de 0,6 dB.
 - A hipótese do **repetidor em ponto elevado** virou o nó `ATG-BLU-03` no Morro do Aipim.
 
-**Divergência que encontrei.** O artigo afirma que o preset *LongFast* corresponde a SF11 **@ 125 kHz**. A documentação oficial do Meshtastic define *LongFast* como SF11 **@ 250 kHz**, CR 4/5. Adotei o **valor oficial** e registro aqui a divergência — ela muda o tempo no ar por um fator ~2 e, portanto, todo o cálculo de *duty cycle*.
+**Divergência que encontrei.** O artigo afirma que o preset *LongFast* corresponde a SF11 **@ 125 kHz**. A documentação oficial do Meshtastic define *LongFast* como SF11 **@ 250 kHz**, CR 4/5. Adotei o **valor oficial** e registro aqui a divergência, ela muda o tempo no ar por um fator ~2 e, portanto, todo o cálculo de *duty cycle*.
 
 ### 1.3 LoRa × LoRaWAN × Meshtastic — e onde isso apareceu no código
 
@@ -100,7 +102,7 @@ O pipeline foi executado sobre a **sequência de cheias de outubro de 2023**, o 
 
 ## 2. Modelagem do payload JSON (ETAPA 2)
 
-### 2.1 ATG-ENV 1.0 — o formato canônico
+### 2.1 ATG-ENV 1.0 — o formato 
 
 Schema completo (JSON Schema draft 2020-12): [`examples/atg-env-1.0.schema.json`](examples/atg-env-1.0.schema.json)
 Implementação: [`src/atg_mesh/schema.py`](src/atg_mesh/schema.py)
@@ -154,7 +156,7 @@ Os **10 campos mínimos** exigidos pelo enunciado estão todos presentes. Os cam
 3. **Regras semânticas que o schema não pega:**
    - `timestamp` ISO 8601 **com timezone** (sem offset → rejeitado);
    - coordenada dentro da **bounding box do Vale do Itajaí** (guarda contra nó mal configurado ou *spoofing* de posição);
-   - `sensor_value` dentro da faixa plausível do tipo de sensor (teto do nível do rio: 20 m — a cheia recorde de 1911 em Blumenau foi 16,90 m);
+   - `sensor_value` dentro da faixa plausível do tipo de sensor (teto do nível do rio: 20 m, a cheia recorde de 1911 em Blumenau foi 16,90 m);
    - coerência `unit` × `sensor_type`.
 
 **Payload que não passa no schema não entra na malha.** Um nó de campo com leitura inválida deve ficar em silêncio, nunca transmitir lixo que o gateway interpretaria como risco. Os rejeitados vão para `outputs/payloads_rejeitados.jsonl`. Esta regra nasceu de um erro real (§6.3).
@@ -193,7 +195,7 @@ off tam campo      codificação
 22   1  batt       uint8   — 0..100 %
 ```
 
-O `struct.pack("<BIIiihhBB", …)` do Python e a `struct atg_c1_t` do `.ino` são **bit a bit idênticos** — é assim que a trilha de software e a de hardware conversam sem adaptador.
+O `struct.pack("<BIIiihhBB", …)` do Python e a `struct atg_c1_t` do `.ino` são **bit a bit idênticos**  é assim que a trilha de software e a de hardware conversam sem adaptador.
 
 O `alert_message` **não viaja pelo rádio**: ele é reconstruído no gateway a partir dos campos. Mandar 119 B de texto quando 23 B de dado bastam custaria 5× mais *airtime*.
 
@@ -264,7 +266,7 @@ O eixo Vila Itoupava → Centro tem **18,4 km**. Não é um número escolhido pa
 
 **(C) Chuva — indicador antecedente, com teto em `attention`.** Os limiares vêm dos **percentis (p95/p99/p99.9) da climatologia ERA5-Land de 6 anos** nas 4 estações (210.432 amostras horárias), não de números inventados. Mas a chuva **não pode escalar sozinha para `alert` ou `critical`**: quem alaga Blumenau é o rio, não a chuva caindo no telhado. Só a cota do Itajaí-Açu chega lá.
 
-Essa restrição não estava no projeto original — nasceu de um alarme falso encontrado na primeira execução real (§6.5).
+Essa restrição não estava no projeto original, nasceu de um alarme falso encontrado na primeira execução real (§6.5).
 
 **Risco final = pior caso entre (A escalonado por B) e (C).**
 
@@ -277,7 +279,7 @@ Essa restrição não estava no projeto original — nasceu de um alarme falso e
 | `alert` | 5 min | 0,186 % |
 | `critical` | 1 min | 0,932 % |
 
-Com ToA de **0,559 s** por pacote (LongFast, 23 B), o duty cycle fica **abaixo de 1 % até no pior caso** — folgado em relação ao limite de 1 % que Zakaria et al. tiveram de respeitar na Malásia. Um nó em calmaria transmite 24 vezes por dia: **13 s de rádio ligado em 24 h**.
+Com ToA de **0,559 s** por pacote (LongFast, 23 B), o duty cycle fica **abaixo de 1 % até no pior caso**, folgado em relação ao limite de 1 % que Zakaria et al. tiveram de respeitar na Malásia. Um nó em calmaria transmite 24 vezes por dia: **13 s de rádio ligado em 24 h**.
 
 ---
 
@@ -336,7 +338,7 @@ Ambas as APIs são **abertas e sem chave** — o avaliador reproduz a coleta int
 
 **O evento.** A janela **04–14/10/2023** foi escolhida automaticamente: o script varreu 2023–2025 e selecionou o maior pico de vazão, **3.213 m³/s em 09/10/2023**. Caiu em cima da sequência de cheias de outubro de 2023, o outubro mais chuvoso da história de Blumenau.
 
-**A célula GloFAS** usada é a de **(−26,9187; −48,9665)**, com vazão média de **361,8 m³/s** — escolhida por varredura em grade, não pela proximidade da régua (ver §6.4 e limitação 2 em §5.5).
+**A célula GloFAS** usada é a de **(−26,9187; −48,9665)**, com vazão média de **361,8 m³/s**  escolhida por varredura em grade, não pela proximidade da régua (ver §6.4 e limitação 2 em §5.5).
 
 ### 5.2 O que a cadeia produziu
 
@@ -351,13 +353,13 @@ Ambas as APIs são **abertas e sem chave** — o avaliador reproduz a coleta int
 | `alert` | 71 |
 | `critical` | 39 |
 
-As 110 amostras em `alert`/`critical` vêm **todas do nó da Prainha** — nenhuma da chuva. É a consequência direta da regra descrita em §3.2.
+As 110 amostras em `alert`/`critical` vêm **todas do nó da Prainha**  nenhuma da chuva. É a consequência direta da regra descrita em §3.2.
 
 ![Timeline de risco](outputs/figures/fig5_timeline_risco.png)
 
 A Fig. 5 mostra isso visualmente: os quatro pluviômetros oscilam entre verde e amarelo; só a faixa do rio (linha de baixo) entra em laranja e vermelho.
 
-**Alertas disparados ao celular:** 36, todos ≤ 180 caracteres, todos ASCII. Distribuição das transições: 27 `safe → attention`, 2 `attention → alert`, 1 `alert → critical`, 6 re-emissões durante `critical`. Nenhum alerta repetido sem mudança de estado — o sistema não grita à toa.
+**Alertas disparados ao celular:** 36, todos ≤ 180 caracteres, todos ASCII. Distribuição das transições: 27 `safe → attention`, 2 `attention → alert`, 1 `alert → critical`, 6 re-emissões durante `critical`. Nenhum alerta repetido sem mudança de estado, o sistema não avisa à toa.
 
 Trajetória do rio ao longo do evento (`outputs/payloads.jsonl`):
 
@@ -420,30 +422,29 @@ O mapeamento vazão→cota (percentis GloFAS sobre a escada oficial do AlertaBlu
 | **Observada em Blumenau** (pico de outubro/2023) | **10,76 m** |
 | **Erro** | **0,83 m (7,7 %)** |
 
-> ⚠️ **[ROSE — CONFERIR ANTES DE ENTREGAR]** Confirmar o valor de 10,76 m e a data exata na página "Enchentes Registradas" do AlertaBlu. Esse número veio da imprensa (NSC Total), não da fonte oficial. Se o AlertaBlu der outro valor, refazer a conta e trocar aqui.
 
-### 5.5 Limitações — o que esta entrega **não** é
+### 5.5 Limitações 
 
 Sendo direta, porque isso importa mais do que a lista de acertos:
 
-1. **Não há hardware.** Nenhum pacote LoRa foi transmitido de verdade. RSSI, SNR, PDR e latência vêm de um **modelo**, não de campo. O modelo é validado em *um* ponto (2,47 km, Colômbia, relevo diferente) — isso é fraco, e não pretendo que seja mais do que é.
+1. **Não há hardware.** Nenhum pacote LoRa foi transmitido de verdade. RSSI, SNR, PDR e latência vêm de um **modelo**, não de campo. O modelo é validado em *um* ponto (2,47 km, Colômbia, relevo diferente).
 
-2. **A célula GloFAS não é a régua.** A busca automática escolheu a célula em (−26,9187; −48,9665), cerca de **10 km a jusante** da Prainha, por ser a que tem maior vazão média (361,8 m³/s) — ou seja, a que está de fato no canal principal. A célula sobre a coordenada exata da régua caía num afluente (§6.4). A escolha é defensável, mas significa que a série representa uma seção do rio **10 km abaixo** do ponto que a mensagem de alerta cita.
+2. **A célula GloFAS não é a régua.** A busca automática escolheu a célula em (−26,9187; −48,9665), cerca de **10 km a jusante** da Prainha, por ser a que tem maior vazão média (361,8 m³/s) ou seja, a que está de fato no canal principal. A célula sobre a coordenada exata da régua caía num afluente (§6.4). A escolha é coorreta, mas significa que a série representa uma seção do rio **10 km abaixo** do ponto que a mensagem de alerta cita.
 
-3. **A cota não é medida — é derivada.** O GloFAS entrega vazão; a conversão para metros de régua usa um **mapeamento monotônico de percentis** sobre a escada oficial (p50→1,2 m; p90→3,0 m; p97→4,0 m; p99,3→6,0 m; p99,9→8,0 m). **Isso não é uma curva-chave.** A curva-chave oficial da estação (ANA / telemetria do AlertaBlu) substituiria isso e mudaria os números. Está declarado no código, no `metrics.json` e aqui.
+3. **A cota não é medida, é derivada.** O GloFAS entrega vazão; a conversão para metros de régua usa um **mapeamento monotônico de percentis** sobre a escada oficial (p50→1,2 m; p90→3,0 m; p97→4,0 m; p99,3→6,0 m; p99,9→8,0 m). **Isso não é uma curva-chave.** A curva-chave oficial da estação (ANA / telemetria do AlertaBlu) substituiria isso e mudaria os números. Está declarado no código, no `metrics.json` e aqui.
 
-4. **O alerta chega ~10 horas atrasado.** Segundo o AlertaBlu, o rio cruzou a cota de inundação (8 m) na noite de 07/10. O pipeline cruza 8 m em 08/10 às 04:00 local — cerca de **10 h depois**. A causa é a fonte: o GloFAS é **diário**, e a reamostragem para passo horário (PCHIP) suaviza a subida. Num sistema de alerta, 10 h é a diferença entre avisar e não avisar. Não é defeito do código; é limitação do dado — e é o motivo pelo qual a substituição pela telemetria de 15 min do AlertaBlu é o **próximo passo prioritário**.
+4. **O alerta chega ~10 horas atrasado.** Segundo o AlertaBlu, o rio cruzou a cota de inundação (8 m) na noite de 07/10. O pipeline cruza 8 m em 08/10 às 04:00 local, cerca de **10 h depois**. A causa é a fonte: o GloFAS é **diário**, e a reamostragem para passo horário (PCHIP) suaviza a subida. Num sistema de alerta, 10 h é a diferença entre avisar e não avisar. Não é defeito do código; é limitação do dado e é o motivo pelo qual a substituição pela telemetria de 15 min do AlertaBlu é o **próximo passo prioritário**.
 
 5. **ERA5 não é pluviômetro.** É reanálise, ~9 km, e subestima picos convectivos locais. Os pluviômetros reais do AlertaBlu dariam picos maiores.
 
-6. **O simulador de malha é uma aproximação.** CSMA/CA é simplificado, não há colisão entre nós diferentes transmitindo simultaneamente, não há mobilidade, e o *shadowing* é log-normal i.i.d. — na prática ele é correlacionado no espaço.
+6. **O simulador de malha é uma aproximação.** CSMA/CA é simplificado, não há colisão entre nós diferentes transmitindo simultaneamente, não há mobilidade, e o *shadowing* é log-normal i.i.d., na prática ele é correlacionado no espaço.
 
 7. **Segurança não foi tratada a sério.** O Meshtastic usa AES-CTR por canal sem contador de frames: **não há proteção contra replay**. Um atacante pode gravar um pacote de "alerta máximo" e reinjetá-lo. Um sistema real precisa de assinatura na camada de aplicação (o próprio projeto está adicionando XEdDSA no firmware 2.8.x).
 
 ### 5.6 O que seria preciso para uma PoC robusta em campo
 
 1. Trocar o GloFAS pela **telemetria real** (AlertaBlu 15 min / ANA / CEMADEN) e pela **curva-chave oficial** da estação — resolve as limitações 2, 3 e 4 de uma vez.
-2. Levar **3 nós a Joinville**, rodar o *Range Test* do Meshtastic e substituir o modelo de propagação por medidas — o roteiro está pronto em [`hardware/README_hardware.md`](hardware/README_hardware.md).
+2. Levar **3 nós a Joinville**, rodar o *Range Test* do Meshtastic e substituir o modelo de propagação por medidas, o roteiro está pronto em [`hardware/README_hardware.md`](hardware/README_hardware.md).
 3. Subir o stack de *edge* de verdade: **Mosquitto → Node-RED → InfluxDB → Grafana** em Docker Compose, como na referência complementar.
 4. Assinar os payloads na camada de aplicação (anti-replay).
 5. **Validar a mensagem com moradores.** 180 caracteres que ninguém entende são 180 caracteres inúteis. Nenhum teste de usabilidade foi feito.
@@ -454,25 +455,18 @@ Sendo direta, porque isso importa mais do que a lista de acertos:
 
 *Registro exigido pelo item 7 da Orientação. Os cinco erros que efetivamente custaram tempo, em ordem cronológica.*
 
-### 6.1 Notebook com as células grudadas numa linha só
 
-Ao abrir o `.ipynb` no Colab, cada célula de código aparecia como uma única linha gigante: `import jsonrating = json.load(open(...))for a in rating["anchors"]:`. Resultado: `SyntaxError` em toda célula com mais de uma instrução, e o `%cd` nunca executava.
+### 6.1 `ModuleNotFoundError: No module named 'atg_mesh'`
 
-**Causa:** o formato `.ipynb` guarda o código como uma **lista de strings, uma por linha, cada uma terminando em `\n`**. As linhas estavam sendo geradas sem o `\n` final, e o Jupyter concatenava tudo.
-
-**Correção:** regerar o notebook garantindo `\n` no fim de cada linha (exceto a última de cada célula) e validar com `ast.parse()` célula a célula antes de subir.
-
-### 6.2 `ModuleNotFoundError: No module named 'atg_mesh'`
-
-O pytest não encontrava o pacote. Passei um tempo mexendo em `sys.path` — o problema era outro.
+O pytest não encontrava o pacote. Passei um tempo mexendo em `sys.path` o problema era outro.
 
 **Causa:** a pasta `src/` simplesmente **não tinha subido para o GitHub**. O upload pela interface web engasga com diretórios aninhados (`src/atg_mesh/`) e criou o repositório sem ela. O `!ls` no Colab mostrava `scripts tests examples` e nenhum `src`.
 
-**Correção:** conferir o que existe de fato no repositório antes de depurar código (`git clone` limpo, ou tentar abrir `raw.githubusercontent.com/.../src/atg_mesh/config.py` — se der 404, o arquivo não está lá). Para subir pasta aninhada pela web: **Add file → Create new file**, digitando o caminho completo com barras; as barras criam os diretórios.
+**Correção:** conferir o que existe de fato no repositório antes de depurar código (`git clone` limpo, ou tentar abrir `raw.githubusercontent.com/.../src/atg_mesh/config.py` se der 404, o arquivo não está lá). Para subir pasta aninhada pela web: **Add file → Create new file**, digitando o caminho completo com barras; as barras criam os diretórios.
 
 **Agravante:** depois de corrigir o repositório, o erro persistia. O `git clone` da célula de setup **falha em silêncio quando o diretório já existe**, e o Colab continuava usando o clone antigo em cache. Solução: *Ambiente de execução → Desconectar e excluir*, ou `!rm -rf` no diretório antes de reclonar.
 
-### 6.3 A API devolveu a série de chuva inteira como `null`
+### 6.2 A API devolveu a série de chuva inteira como `null`
 
 Primeira coleta real: **1.056 dos 1.297 payloads rejeitados** pelo validador, todos os pluviométricos, com `sensor_value` = NaN. O pipeline então quebrava lá na frente, no codec:
 
@@ -486,15 +480,15 @@ ValueError: cannot convert float NaN to integer
 
 **O que aprendi com isso:** o validador fez o trabalho dele — pegou os 1.056 e reportou. O erro foi de arquitetura: o pipeline **seguia mesmo assim**. Corrigi a regra: *payload que não passa no schema não entra na malha*. Um nó de campo com leitura ruim deve ficar em silêncio, nunca transmitir lixo que o gateway interpretaria como risco. Os rejeitados agora vão para `outputs/payloads_rejeitados.jsonl`, o codec recusa codificar NaN com erro claro, e um teste de regressão trava as duas coisas.
 
-### 6.4 O GloFAS pegou o rio errado
+### 6.3 O GloFAS pegou o rio errado
 
 A primeira coleta devolveu **pico de 6,93 m³/s** para o Itajaí-Açu. O rio tem vazão média da ordem de **centenas** de m³/s; em cheia, milhares. 6,93 m³/s é um riacho.
 
 **Causa:** o GloFAS tem resolução de ~5 km, e a própria documentação do Open-Meteo avisa que *"the closest river might not be selected correctly"*, recomendando variar as coordenadas em ~0,1°. A coordenada exata da régua da Prainha caiu numa célula de afluente.
 
-**Correção:** implementei `find_river_cell()`, que varre uma grade 3×3 (±0,1°) ao redor da régua e escolhe a célula com **maior vazão média** — que é, por construção, o canal principal. A célula escolhida ficou em (−26,9187; −48,9665), com vazão média de **361,8 m³/s**. O script agora **avisa** se o pico ficar abaixo de 50 m³/s, sinal de que ainda está num afluente.
+**Correção:** implementei `find_river_cell()`, que varre uma grade 3×3 (±0,1°) ao redor da régua e escolhe a célula com **maior vazão média** que é, por construção, o canal principal. A célula escolhida ficou em (−26,9187; −48,9665), com vazão média de **361,8 m³/s**. O script agora **avisa** se o pico ficar abaixo de 50 m³/s, sinal de que ainda está num afluente.
 
-### 6.5 Alarme falso: alerta com chuva zero
+### 6.4 Alarme falso: alerta com chuva zero
 
 Com a coleta funcionando, o pipeline emitiu **48 alertas** para o evento de outubro/2023. Lendo o `alerts.jsonl`, encontrei estes:
 
@@ -503,11 +497,11 @@ Com a coleta funcionando, o pipeline emitiu **48 alertas** para o evento de outu
 [ATG-BLU] ALERTA MAXIMO: Chuva 19.5mm/h em Garcia. 24h=26mm.
 ```
 
-Alerta com **chuva zero caindo**. Alerta máximo com **26 mm em 24 h** — uma tarde de chuva, não uma emergência. A maior parte dos 218 payloads em `alert` vinha da chuva, não do rio: o sinal real (o Itajaí-Açu subindo até 9,93 m) estava afogado em ruído.
+Alerta com **chuva zero caindo**. Alerta máximo com **26 mm em 24 h**, uma tarde de chuva, não uma emergência. A maior parte dos 218 payloads em `alert` vinha da chuva, não do rio: o sinal real (o Itajaí-Açu subindo até 9,93 m) estava afogado em ruído.
 
-**Causa:** meus limiares de chuva são percentílicos (p95/p99/p99.9 da climatologia ERA5). O percentil é um bom critério para **acumulado**, mas ruim para **taxa horária** — como a maioria das horas chuvosas tem pouca chuva, o p99 da chuva horária cai em 8,7 mm/h, valor que não caracteriza emergência nenhuma.
+**Causa:** meus limiares de chuva são percentílicos (p95/p99/p99.9 da climatologia ERA5). O percentil é um bom critério para **acumulado**, mas ruim para **taxa horária**, como a maioria das horas chuvosas tem pouca chuva, o p99 da chuva horária cai em 8,7 mm/h, valor que não caracteriza emergência nenhuma.
 
-**Correção — e esta foi conceitual, não de código:** a chuva é um **indicador antecedente**, não é o perigo. Quem alaga Blumenau é o rio. Passei a limitar o teto da chuva a `attention`; só a cota do Itajaí-Açu (nível absoluto + taxa de variação) pode escalar para `alert` ou `critical`. Os limiares percentílicos continuam sendo o critério — o que mudou foi o teto.
+**Correção — e esta foi conceitual, não de código:** a chuva é um **indicador antecedente**, não é o perigo. Quem alaga Blumenau é o rio. Passei a limitar o teto da chuva a `attention`; só a cota do Itajaí-Açu (nível absoluto + taxa de variação) pode escalar para `alert` ou `critical`. Os limiares percentílicos continuam sendo o critério, o que mudou foi o teto.
 
 **Resultado:** 48 → **36 alertas**, e as 110 amostras em `alert`/`critical` passaram a vir **todas do nó da Prainha**. Um sistema que grita o tempo todo é um sistema que ninguém escuta.
 
@@ -528,17 +522,17 @@ satélite / radar ─┤         └─→  API / InfluxDB / Grafana / Defesa Ci
 companhia de água─┘
 ```
 
-O mesmo envelope serve para um sensor físico, para a saída de um modelo de IA e para um dado de terceiro. Quem consome não precisa saber a diferença — só precisa de `sensor_type`, `sensor_value`, `risk_level` e `source`.
+O mesmo envelope serve para um sensor físico, para a saída de um modelo de IA e para um dado de terceiro. Quem consome não precisa saber a diferença só precisa de `sensor_type`, `sensor_value`, `risk_level` e `source`.
 
 ### 7.2 Conexão com os períodos anteriores
 
 - **Semana 5 (NDVI, Sentinel-2/GEE):** o NDVI de cada sub-bacia é um `sensor_type` novo, com `source: "satellite"`. Vegetação baixa → escoamento mais rápido → o limiar de taxa (`RATE_ESCALATE_1`) deveria ser **modulado pelo NDVI**.
-- **Semana 6 (HAND, WhiteboxTools):** o HAND diz *quem* alaga a cada cota. Hoje o alerta diz "cota 1as vias 7,4 m". Com o HAND, ele passa a dizer **"a sua rua alaga em 40 min"** — e o `to` do downlink deixa de ser broadcast e vira uma lista de nós por faixa de cota.
-- **Período 7 (U-RNN, nowcasting):** o U-RNN prevê a lâmina d'água em ~0,36 s. Essa previsão **cabe no mesmo ATG-ENV** (`sensor_type: "river_level"`, `source: "nowcast"`, `timestamp` no futuro). E resolve diretamente a limitação 4 (§5.5): o alerta deixa de ser reativo — e de chegar 10 h atrasado — e passa a ser antecipatório.
+- **Semana 6 (HAND, WhiteboxTools):** o HAND diz *quem* alaga a cada cota. Hoje o alerta diz "cota 1as vias 7,4 m". Com o HAND, ele passa a dizer **"a sua rua alaga em 40 min"**  e o `to` do downlink deixa de ser broadcast e vira uma lista de nós por faixa de cota.
+- **Período 7 (U-RNN, nowcasting):** o U-RNN prevê a lâmina d'água em ~0,36 s. Essa previsão **cabe no mesmo ATG-ENV** (`sensor_type: "river_level"`, `source: "nowcast"`, `timestamp` no futuro). E resolve diretamente a limitação 4 (§5.5): o alerta deixa de ser reativo, e de chegar 10 h atrasado, e passa a ser antecipatório.
 
 ### 7.3 O que este período entrega que os anteriores não entregavam
 
-Os períodos 5–7 produziram **conhecimento** (onde alaga, quanto alaga, quando alaga). Nenhum deles resolvia **como isso chega na mão de quem está na área de risco quando a torre de celular cai**. É isso que o Meshtastic resolve: durante as cheias de outubro de 2023, energia e telefonia caíram em vários bairros de Blumenau. Uma malha LoRa alimentada por bateria/solar continua funcionando — e o app Meshtastic no celular do morador recebe o texto por **Bluetooth**, sem operadora, sem internet.
+Os períodos 5–7 produziram **conhecimento** (onde alaga, quanto alaga, quando alaga). Nenhum deles resolvia **como isso chega na mão de quem está na área de risco quando a torre de celular cai**. É isso que o Meshtastic resolve: durante as cheias de outubro de 2023, energia e telefonia caíram em vários bairros de Blumenau. Uma malha LoRa alimentada por bateria/solar continua funcionando e o app Meshtastic no celular do morador recebe o texto por **Bluetooth**, sem operadora, sem internet.
 
 ### 7.4 O que foi entregue × o que falta para operar em campo
 
@@ -555,11 +549,11 @@ Os períodos 5–7 produziram **conhecimento** (onde alaga, quanto alaga, quando
 ### 7.5 Cuidados de engenharia que este trabalho já expõe
 
 - **Confiabilidade:** margem de 0,5 dB no enlace crítico é margem *nenhuma*. Ou sobe repetidor, ou muda o preset, ou o nó fica offline na hora que importa.
-- **Latência:** 0,56 s de mediana é irrelevante frente ao tempo de resposta de uma bacia. Latência **não** é o gargalo — cobertura e frequência do dado hidrológico são.
+- **Latência:** 0,56 s de mediana é irrelevante frente ao tempo de resposta de uma bacia. Latência **não** é o gargalo  cobertura e frequência do dado hidrológico são.
 - **Tamanho de mensagem:** 233 B é um teto duro. Todo campo novo no payload é uma decisão de engenharia, não de conveniência.
 - **Bateria:** o reporte adaptativo é o que separa um nó que dura uma estação chuvosa de um que morre na primeira semana.
 - **Antena:** o repetidor no Morro do Aipim, com 8 dBi e ~250 m de cota, carrega sozinho a metade norte da malha. Posicionamento de antena vale mais que qualquer otimização de software aqui.
-- **Ruído de alerta:** o alerta só é reemitido quando o estado **piora**. Isso não era óbvio no início — precisei ver 48 alertas com chuva zero para entender (§6.5).
+- **Ruído de alerta:** o alerta só é reemitido quando o estado **piora**. Isso não era óbvio no início precisei ver 48 alertas com chuva zero para entender (§6.5).
 
 ---
 
@@ -584,7 +578,7 @@ python scripts/03_make_examples.py
 python -m pytest -q
 ```
 
-Sem internet? `python scripts/01_run_pipeline.py --offline` roda com um evento sintético determinístico (`source: "synthetic"`). Serve como teste de fumaça — **não** como resultado.
+Sem internet? `python scripts/01_run_pipeline.py --offline` roda com um evento sintético determinístico (`source: "synthetic"`). Serve como teste **não** como resultado.
 
 Notebook executado (Colab, com saídas salvas): [`notebooks/ATG_P8_LoRa_Meshtastic_JSON.ipynb`](notebooks/ATG_P8_LoRa_Meshtastic_JSON.ipynb)
 
@@ -664,7 +658,7 @@ Americas-TechGuard-Semana8/
 
 ---
 
-*Todo o código deste repositório é de autoria própria. Bibliotecas de terceiros estão declaradas em `requirements.txt`. Nenhum trecho de código dos artigos de referência foi copiado — eles foram usados como guia conceitual e arquitetural, e as adaptações estão explicitadas nas tabelas comparativas da ETAPA 1. Nenhuma credencial, token, senha ou chave de API está versionada (as APIs utilizadas não exigem chave).*# Americas TechGuard — Período 8
+*Todo o código deste repositório é de autoria própria. Bibliotecas de terceiros estão declaradas em `requirements.txt`. Nenhum trecho de código dos artigos de referência foi copiado, eles foram usados como guia conceitual e arquitetural, e as adaptações estão explicitadas nas tabelas comparativas da ETAPA 1. Nenhuma credencial, token, senha ou chave de API está versionada (as APIs utilizadas não exigem chave).*# Americas TechGuard — Período 8
 ## Integração LoRa/Meshtastic, JSON e alertas ambientais para dispositivos móveis
 
 **Rosemeri Borges** — Centro Universitário SENAI/SC, Campus Florianópolis
