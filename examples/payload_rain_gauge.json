@@ -1,0 +1,30 @@
+{
+  "schema": "atg-env/1.0",
+  "device_id": "!a76c0001",
+  "node_num": 2808872961,
+  "node_name": "ATG-BLU-01 Vila Itoupava",
+  "timestamp": "2026-07-12T14:00:00Z",
+  "latitude": -26.755,
+  "longitude": -49.0906,
+  "altitude": 30.0,
+  "site": "Vila Itoupava",
+  "sensor_type": "rain_gauge",
+  "sensor_value": 21.4,
+  "unit": "mm",
+  "rate_of_change": null,
+  "accum_24h_mm": 118.2,
+  "risk_level": "attention",
+  "alertablu_stage": null,
+  "alert_message": "[ATG-BLU] ATENCAO: Chuva 21.4mm/h em Vila Itoupava. 24h=118mm. Acompanhe o AlertaBlu. Emerg 199/193. 12/07 14:00",
+  "source": "openmeteo_era5",
+  "quality": "ok",
+  "battery_pct": 87,
+  "fw": "atg-node/1.0",
+  "radio": {
+    "rssi_dbm": -122.7,
+    "snr_db": -8.7,
+    "hops": 2,
+    "preset": "LONG_FAST",
+    "region": "ANZ"
+  }
+}

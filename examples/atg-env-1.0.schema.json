@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/RoseBorges44/Americas-TechGuard-Semana8/atg-env-1.0.json",
+  "title": "ATG-ENV 1.0 - Americas TechGuard environmental payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "device_id",
+    "timestamp",
+    "latitude",
+    "longitude",
+    "sensor_type",
+    "sensor_value",
+    "unit",
+    "risk_level",
+    "alert_message",
+    "source"
+  ],
+  "properties": {
+    "schema": {
+      "const": "atg-env/1.0"
+    },
+    "device_id": {
+      "type": "string",
+      "pattern": "^![0-9a-f]{8}$",
+      "description": "Meshtastic User ID em hexadecimal."
+    },
+    "node_num": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295,
+      "description": "Equivalente decimal do device_id (campo 'from' no JSON MQTT)."
+    },
+    "node_name": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 com timezone (UTC)."
+    },
+    "latitude": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "longitude": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+    },
+    "altitude": {
+      "type": "number",
+      "minimum": -500,
+      "maximum": 9000
+    },
+    "site": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "sensor_type": {
+      "type": "string",
+      "enum": [
+        "river_level",
+        "rain_gauge",
+        "river_discharge",
+        "repeater",
+        "gateway"
+      ]
+    },
+    "sensor_value": {
+      "type": "number"
+    },
+    "unit": {
+      "type": "string",
+      "enum": [
+        "m",
+        "mm",
+        "m3/s",
+        "none"
+      ]
+    },
+    "rate_of_change": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Variacao por hora na unidade do sensor (m/h ou mm/h)."
+    },
+    "accum_24h_mm": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "safe",
+        "attention",
+        "alert",
+        "critical"
+      ]
+    },
+    "alertablu_stage": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "normalidade",
+        "observacao",
+        "atencao",
+        "alerta",
+        "alerta_maximo",
+        null
+      ]
+    },
+    "alert_message": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "hardware",
+        "simulation",
+        "synthetic",
+        "csv",
+        "mocked_api",
+        "manual",
+        "openmeteo_era5",
+        "glofas_openmeteo"
+      ]
+    },
+    "quality": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "stale",
+        "out_of_range"
+      ]
+    },
+    "battery_pct": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "fw": {
+      "type": "string",
+      "maxLength": 24
+    },
+    "radio": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rssi_dbm": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "snr_db": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "hops": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 7
+        },
+        "preset": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "_doc": "As tres representacoes do MESMO payload. Somente as compactas cabem no Data.payload do Meshtastic (233 B).",
+  "atg-env/1.0 (canonico, bytes)": 751,
+  "ATG-C1-JSON": "{\"v\":1,\"n\":2809331718,\"t\":1783864800,\"y\":-26.9187,\"x\":-49.0665,\"s\":1,\"w\":6.42,\"r\":2,\"c\":0.28,\"b\":87}",
+  "ATG-C1-JSON (bytes)": 100,
+  "ATG-C1-BIN (hex)": "11060073a7e09d536ad44065fefc4d13fd820218010257",
+  "ATG-C1-BIN (bytes)": 23,
+  "ATG-C1-B64 (TEXT_MESSAGE_APP)": "EQYAc6fgnVNq1EBl/vxNE/2CAhgBAlc=",
+  "ATG-C1-B64 (bytes)": 32,
+  "decodificado_de_volta": {
+    "node_num": 2809331718,
+    "timestamp": "2026-07-12T14:00:00Z",
+    "latitude": -26.9187,
+    "longitude": -49.0665,
+    "sensor_type": "river_level",
+    "sensor_value": 6.42,
+    "unit": "m",
+    "risk_level": "alert",
+    "rate_of_change": 0.28,
+    "battery_pct": 87
+  },
+  "tamanhos": {
+    "atg-env/1.0 (JSON canonico, indentado)": 821,
+    "atg-env/1.0 (JSON minificado)": 699,
+    "ATG-C1-JSON": 100,
+    "ATG-C1-BIN (bytes crus, PRIVATE_APP)": 23,
+    "ATG-C1-B64 (dentro de TEXT_MESSAGE_APP)": 32,
+    "alert_message (texto humano)": 115
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "_doc": "Envelopes JSON reais do ecossistema Meshtastic (mqtt.json_enabled=true).",
+  "uplink": {
+    "topic": "msh/BR/2/json/ATG-Blumenau/!a76c00ff",
+    "message": {
+      "channel": 0,
+      "from": 2809331718,
+      "id": 647186499,
+      "payload": {
+        "atg": "atg-env/1.0",
+        "sensor_type": "river_level",
+        "sensor_value": 6.42,
+        "unit": "m",
+        "risk_level": "alert",
+        "rate_of_change": 0.28,
+        "battery_level": 87,
+        "latitude_i": -269187000,
+        "longitude_i": -490665000
+      },
+      "sender": "!a76c00ff",
+      "timestamp": 1783871392,
+      "to": 4294967295,
+      "type": "telemetry",
+      "rssi": -98.4,
+      "snr": 8.1,
+      "hops_away": 1
+    }
+  },
+  "uplink_texto_do_alerta": {
+    "topic": "msh/BR/2/json/ATG-Blumenau/!a76c00ff",
+    "message": {
+      "channel": 0,
+      "from": 2809331718,
+      "id": 549652093,
+      "payload": {
+        "text": "[ATG-BLU] ALERTA: Rio Itajai-Acu 6.42m (+0.28m/h) na Prainha. Cota de alerta 6m. Evite margens. Emergencia 199/193."
+      },
+      "sender": "!a76c00ff",
+      "timestamp": 1783871392,
+      "to": 4294967295,
+      "type": "text",
+      "rssi": -98.4,
+      "snr": 8.1,
+      "hops_away": 1
+    }
+  },
+  "downlink_para_o_celular": {
+    "topic": "msh/BR/2/json/mqtt/",
+    "_requisito": "exige um canal chamado exatamente 'mqtt' com downlink habilitado; campos 'from' e 'payload' sao obrigatorios (firmware >= 2.2.20)",
+    "message": {
+      "from": 2808873215,
+      "to": 4294967295,
+      "channel": 0,
+      "type": "sendtext",
+      "payload": "[ATG-BLU] ALERTA: Rio Itajai-Acu 6.42m (+0.28m/h) na Prainha. Cota de alerta 6m. Evite margens. Emergencia 199/193."
+    }
+  },
+  "topico_protobuf_equivalente": "msh/BR/2/e/ATG-Blumenau/!a76c00ff",
+  "contexto_de_radio": {
+    "region": "ANZ",
+    "modem_preset": "LONG_FAST",
+    "primary_channel": "ATG-Blumenau",
+    "downlink_channel": "mqtt",
+    "mqtt_root": "msh/BR"
+  }
+}

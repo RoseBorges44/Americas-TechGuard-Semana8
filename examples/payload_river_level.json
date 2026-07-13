@@ -1,0 +1,30 @@
+{
+  "schema": "atg-env/1.0",
+  "device_id": "!a76c0006",
+  "node_num": 2809331718,
+  "node_name": "ATG-BLU-06 Prainha (regua fluviometrica)",
+  "timestamp": "2026-07-12T14:00:00Z",
+  "latitude": -26.9187,
+  "longitude": -49.0665,
+  "altitude": 12.0,
+  "site": "Prainha - Rio Itajai-Acu",
+  "sensor_type": "river_level",
+  "sensor_value": 6.42,
+  "unit": "m",
+  "rate_of_change": 0.28,
+  "accum_24h_mm": 96.4,
+  "risk_level": "alert",
+  "alertablu_stage": "alerta",
+  "alert_message": "[ATG-BLU] ALERTA: Rio Itajai-Acu 6.42m (+0.28m/h) na Prainha. Cota de alerta 6m. Evite margens. Emergencia 199/193.",
+  "source": "glofas_openmeteo",
+  "quality": "ok",
+  "battery_pct": 87,
+  "fw": "atg-node/1.0",
+  "radio": {
+    "rssi_dbm": -98.4,
+    "snr_db": 8.1,
+    "hops": 1,
+    "preset": "LONG_FAST",
+    "region": "ANZ"
+  }
+}
