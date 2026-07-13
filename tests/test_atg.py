@@ -94,11 +94,24 @@ def test_taxa_de_variacao_escalona_o_risco():
     assert muito.risk_level == "critical"
 
 
-def test_risco_final_e_o_pior_caso():
+def test_chuva_sozinha_nao_passa_de_attention():
+    """
+    Regressao: chuva e indicador antecedente, nao o perigo. Mesmo chuva
+    extrema so eleva ate 'attention' - alert/critical vem da cota do rio.
+    """
     th = risk.RainThresholds.from_fallback()
-    a = risk.classify_river(1.0, 0.0)                  # safe
-    b = risk.classify_rain(60.0, 200.0, th)            # critical
-    assert risk.combine(a, b).risk_level == "critical"
+    assert risk.classify_rain(200.0, 500.0, th).risk_level == "attention"
+
+    rio_calmo = risk.classify_river(1.0, 0.0)          # safe
+    chuva_extrema = risk.classify_rain(200.0, 500.0, th)
+    assert risk.combine(rio_calmo, chuva_extrema).risk_level == "attention"
+
+
+def test_apenas_o_rio_escala_para_critical():
+    th = risk.RainThresholds.from_fallback()
+    rio_em_cheia = risk.classify_river(8.5, 0.30)      # critical
+    chuva_fraca = risk.classify_rain(0.0, 0.0, th)     # safe
+    assert risk.combine(rio_em_cheia, chuva_fraca).risk_level == "critical"
 
 
 # ---------------------------------------------------------------- alerta
