@@ -6,3 +6,5 @@ __pycache__/
 .env
 secrets.*
 *.psk
+data/raw/rain_era5_climatology.csv
+data/raw/discharge_glofas_climatology.csv
