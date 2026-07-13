@@ -1,0 +1,44 @@
+MIT License
+
+Copyright (c) 2026 Rosemeri Borges - Centro Universitario SENAI/SC (Florianopolis)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---------------------------------------------------------------------------
+USO ACADEMICO E LICENCAS DE TERCEIROS
+
+Este repositorio e um artefato academico do projeto Americas TechGuard
+(UniSENAI/SC). O codigo e original. As fontes de terceiros utilizadas mantem
+suas proprias licencas e sao apenas CITADAS, nunca redistribuidas:
+
+  - Zakaria, Jabbar & Sulaiman (2023), Internet of Things and Cyber-Physical
+    Systems 3:249-261 - artigo em acesso aberto sob CC BY-NC-ND 4.0.
+    Usado como referencia conceitual (algoritmo de nivel/taxa, metricas
+    RSSI/SNR/PDR/atraso). Nenhum trecho de codigo foi copiado.
+  - Garzon Andosilla & Rugeles (2026), arXiv:2605.20379, licenca perpetua
+    nao-exclusiva do arXiv. Usado como referencia de arquitetura (camadas,
+    managed flooding, stack conteinerizado) e como ponto de validacao do
+    modelo de propagacao. Nenhum trecho de codigo foi copiado.
+  - Documentacao Meshtastic (meshtastic.org/docs) - Meshtastic(R) e marca
+    registrada da Meshtastic LLC. Os formatos de topico e envelope JSON aqui
+    implementados seguem a especificacao publica.
+  - Dados: Open-Meteo (CC BY 4.0) sobre ERA5-Land (ECMWF/Copernicus) e
+    GloFAS v4 (Copernicus Emergency Management Service).
+  - Limiares de cota e criterios de alerta: Defesa Civil de Blumenau /
+    AlertaBlu (dado publico oficial).
