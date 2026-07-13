@@ -149,7 +149,12 @@ def classify_rain(rain_1h_mm: float, accum_24h_mm: float,
 
 
 def combine(*assessments: RiskAssessment) -> RiskAssessment:
-    """Risco final = pior caso entre os criterios."""
+    """
+    Risco final = pior caso entre os criterios.
+
+    Como classify_rain() ja limita a chuva a 'attention', o teto e respeitado
+    automaticamente: 'alert' e 'critical' so podem vir da avaliacao do rio.
+    """
     best = max(assessments, key=lambda a: _idx(a.risk_level))
     stage = next((a.alertablu_stage for a in assessments if a.alertablu_stage), None)
     return RiskAssessment(
