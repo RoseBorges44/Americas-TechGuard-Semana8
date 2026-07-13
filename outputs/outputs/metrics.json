@@ -1,0 +1,144 @@
+{
+  "run": {
+    "offline": false,
+    "window": [
+      "2023-10-04",
+      "2023-10-14"
+    ],
+    "seed": 42,
+    "preset": "LONG_FAST",
+    "region": "ANZ"
+  },
+  "data": {
+    "source_rain": "openmeteo_era5",
+    "source_river": "glofas_openmeteo",
+    "note": "climatologia GloFAS: 10756 dias diarios",
+    "rain_thresholds": {
+      "h1_attention": 4.1,
+      "h1_alert": 8.7,
+      "h1_critical": 16.85,
+      "h24_attention": 27.3,
+      "h24_alert": 46.3,
+      "h24_critical": 92.87,
+      "provenance": "percentis p95/p99/p99.9 de climatologia ERA5-Land de 6 anos nas 4 estacoes (210432 amostras horarias)"
+    },
+    "rating_curve": {
+      "anchors": [
+        {
+          "percentile": 50.0,
+          "discharge_m3s": 218.8,
+          "stage_m": 1.2
+        },
+        {
+          "percentile": 90.0,
+          "discharge_m3s": 630.0,
+          "stage_m": 3.0
+        },
+        {
+          "percentile": 97.0,
+          "discharge_m3s": 974.8,
+          "stage_m": 4.0
+        },
+        {
+          "percentile": 99.3,
+          "discharge_m3s": 1406.4,
+          "stage_m": 6.0
+        },
+        {
+          "percentile": 99.9,
+          "discharge_m3s": 2141.9,
+          "stage_m": 8.0
+        }
+      ],
+      "q": [
+        218.79,
+        629.96,
+        974.7775000000008,
+        1406.4432000000008,
+        2141.89
+      ],
+      "h": [
+        1.2,
+        3.0,
+        4.0,
+        6.0,
+        8.0
+      ],
+      "n_days": 10756,
+      "method": "mapeamento monotonico percentil->cota oficial AlertaBlu",
+      "warning": "APROXIMACAO. Nao e a curva-chave oficial da estacao.",
+      "glofas_cell": [
+        -26.9187,
+        -48.9665
+      ]
+    }
+  },
+  "payloads": {
+    "total": 1297,
+    "valid": 1297,
+    "rejected": 0,
+    "by_risk": {
+      "safe": 760,
+      "attention": 427,
+      "alert": 71,
+      "critical": 39
+    }
+  },
+  "payload_sizes_bytes": {
+    "atg-env/1.0 (JSON canonico, indentado)": 791,
+    "atg-env/1.0 (JSON minificado)": 669,
+    "ATG-C1-JSON": 98,
+    "ATG-C1-BIN (bytes crus, PRIVATE_APP)": 23,
+    "ATG-C1-B64 (dentro de TEXT_MESSAGE_APP)": 32,
+    "alert_message (texto humano)": 119
+  },
+  "lora": {
+    "time_on_air_s": 0.5591,
+    "bitrate_bps": 1074.2,
+    "duty_cycle_pct_by_risk": {
+      "safe": 0.0155,
+      "attention": 0.0621,
+      "alert": 0.1864,
+      "critical": 0.9318
+    },
+    "toa_by_preset_s": {
+      "LONG_FAST": 0.5591,
+      "LONG_SLOW": 2.2364,
+      "MEDIUM_FAST": 0.15,
+      "SHORT_FAST": 0.0452
+    },
+    "toa_if_full_json_s": "N/A - JSON canonico (721 B) excede DATA_PAYLOAD_LEN (233 B)"
+  },
+  "mesh": {
+    "packets": 1297,
+    "pdr_pct": 100.0,
+    "mean_hops": 1.09,
+    "median_latency_s": 0.559,
+    "p95_latency_s": 2.382,
+    "mean_rssi_dbm": -97.1,
+    "mean_snr_db": 16.9,
+    "pdr_by_node": {
+      "ATG-BLU-01 Vila Itoupava": 100.0,
+      "ATG-BLU-02 Itoupava Central": 100.0,
+      "ATG-BLU-04 Garcia": 100.0,
+      "ATG-BLU-05 Velha": 100.0,
+      "ATG-BLU-06 Prainha (regua fluviometrica)": 100.0
+    },
+    "mean_tx_per_packet": 5.97
+  },
+  "star_baseline_hop_limit_1": {
+    "_comment": "Mesma fisica, sem retransmissao: equivale a uma topologia estrela (no -> gateway), como no LoRaWAN de Zakaria et al. Mede o ganho real do mesh.",
+    "pdr_pct": 90.36,
+    "pdr_by_node": {
+      "ATG-BLU-01 Vila Itoupava": 52.7,
+      "ATG-BLU-02 Itoupava Central": 100.0,
+      "ATG-BLU-04 Garcia": 100.0,
+      "ATG-BLU-05 Velha": 100.0,
+      "ATG-BLU-06 Prainha (regua fluviometrica)": 100.0
+    }
+  },
+  "alerts": {
+    "total": 36,
+    "max_chars": 180
+  }
+}

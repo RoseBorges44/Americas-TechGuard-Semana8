@@ -1,0 +1,9 @@
+2026-07-13 01:08:10,536 | INFO    | 1/6 ingestao de dados (offline=False, janela 2023-10-04..2023-10-14)
+2026-07-13 01:08:17,222 | INFO    |     fonte chuva=openmeteo_era5 | fonte rio=glofas_openmeteo | climatologia GloFAS: 10756 dias diarios
+2026-07-13 01:08:17,397 | INFO    | 2/6 limiares de chuva: {'h1_attention': 4.1, 'h1_alert': 8.7, 'h1_critical': 16.85, 'h24_attention': 27.3, 'h24_alert': 46.3, 'h24_critical': 92.87, 'provenance': 'percentis p95/p99/p99.9 de climatologia ERA5-Land de 6 anos nas 4 estacoes (210432 amostras horarias)'}
+2026-07-13 01:08:17,597 | INFO    | 3/6 1297 payloads ATG-ENV gerados
+2026-07-13 01:08:17,973 | INFO    | 4/6 validacao: 1297 validos, 0 rejeitados (nao transmitidos)
+2026-07-13 01:08:18,452 | INFO    | 5/6 malha: PDR=100.0% | saltos medios=1.09 | latencia mediana=0.56s
+2026-07-13 01:08:18,452 | INFO    |     baseline estrela (hop_limit=1, tipo LoRaWAN): PDR=90.4%
+2026-07-13 01:08:18,452 | INFO    |     alertas emitidos para celular: 36
+2026-07-13 01:08:18,493 | INFO    | 6/6 saidas gravadas em /content/Americas-TechGuard-Semana8/outputs

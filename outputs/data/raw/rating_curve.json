@@ -1,0 +1,46 @@
+{
+  "anchors": [
+    {
+      "percentile": 50.0,
+      "discharge_m3s": 218.8,
+      "stage_m": 1.2
+    },
+    {
+      "percentile": 90.0,
+      "discharge_m3s": 630.0,
+      "stage_m": 3.0
+    },
+    {
+      "percentile": 97.0,
+      "discharge_m3s": 974.8,
+      "stage_m": 4.0
+    },
+    {
+      "percentile": 99.3,
+      "discharge_m3s": 1406.4,
+      "stage_m": 6.0
+    },
+    {
+      "percentile": 99.9,
+      "discharge_m3s": 2141.9,
+      "stage_m": 8.0
+    }
+  ],
+  "q": [
+    218.79,
+    629.96,
+    974.7775000000008,
+    1406.4432000000008,
+    2141.89
+  ],
+  "h": [
+    1.2,
+    3.0,
+    4.0,
+    6.0,
+    8.0
+  ],
+  "n_days": 10756,
+  "method": "mapeamento monotonico percentil->cota oficial AlertaBlu",
+  "warning": "APROXIMACAO. Nao e a curva-chave oficial da estacao."
+}
