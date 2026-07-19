@@ -412,28 +412,57 @@ Trajetória do rio ao longo do evento (`outputs/payloads.jsonl`):
 
 Travado em teste automatizado (`tests/test_atg.py::test_calibracao_do_modelo_de_propagacao`).
 
-**(b) A cota derivada, contra a cheia real.** Esta é a que eu não esperava que funcionasse tão bem.
+**(b) A cota derivada, contra as cheias reais.**
 
-O mapeamento vazão→cota (percentis GloFAS sobre a escada oficial do AlertaBlu) foi construído a partir da **climatologia de 10.756 dias**, sem olhar para o evento de outubro/2023. Aplicado ao pico:
+A tabela "Enchentes Registradas" da Proteção e Defesa Civil de Blumenau
+registra **três enchentes** dentro da janela analisada. Comparando com a série
+que o pipeline derivou da vazão GloFAS, construída sobre 10.756 dias de
+climatologia, sem nunca ver o evento:
 
-| | Cota |
-|---|---|
-| **Derivada pelo pipeline** (09/10, 00:00 UTC) | **9,93 m** |
-| **Observada em Blumenau** (pico de outubro/2023) | **10,76 m** |
-| **Erro** | **0,83 m (7,7 %)** |
+| Data | Cota oficial (Defesa Civil) | Máximo derivado | Erro |
+|---|---|---|---|
+| 05/10/2023 | 8,78 m | 3,59 m | **5,19 m** — não capturada |
+| 09/10/2023 | **10,19 m** | **9,93 m** | **0,26 m (2,6 %)** |
+| 12/10/2023 | 10,76 m | 6,35 m | **4,41 m** — não capturada |
+
+O acerto na cheia de 09/10 é bom: **0,26 m de erro numa cota de dez metros**,
+com um mapeamento que nunca viu o evento. O pico da série derivada ocorre em
+08/10 às 21h local (09/10 00:00 UTC), três horas antes do registro oficial.
+
+Mas as duas outras cheias o pipeline **não capturou** — inclusive a maior
+delas, a de 12/10. Isso é analisado na limitação 4 da §5.5, e é a informação
+mais importante desta validação: o método acerta a magnitude quando enxerga a
+cheia, mas a fonte de dados não enxerga todas.
+
+![Enchentes registradas — Defesa Civil de Blumenau](docs/prints/05_alertablu_enchentes_registradas.png)
+
+*Fonte das cotas oficiais: [Proteção e Defesa Civil de Blumenau — Enchentes
+Registradas](https://defesacivil.blumenau.sc.gov.br/p/enchentes), consultada em
+17/07/2026.*
 
 
 ### 5.5 Limitações 
 
-Sendo direta, porque isso importa mais do que a lista de acertos:
-
 1. **Não há hardware.** Nenhum pacote LoRa foi transmitido de verdade. RSSI, SNR, PDR e latência vêm de um **modelo**, não de campo. O modelo é validado em *um* ponto (2,47 km, Colômbia, relevo diferente).
 
-2. **A célula GloFAS não é a régua.** A busca automática escolheu a célula em (−26,9187; −48,9665), cerca de **10 km a jusante** da Prainha, por ser a que tem maior vazão média (361,8 m³/s) ou seja, a que está de fato no canal principal. A célula sobre a coordenada exata da régua caía num afluente (§6.4). A escolha é coorreta, mas significa que a série representa uma seção do rio **10 km abaixo** do ponto que a mensagem de alerta cita.
+2. **A célula GloFAS não é a régua.** A busca automática escolheu a célula em (−26,9187; −48,9665), cerca de **10 km a jusante** da Prainha, por ser a que tem maior vazão média (361,8 m³/s) ou seja, a que está de fato no canal principal. A célula sobre a coordenada exata da régua caía num afluente (§6.4). A escolha é correta, mas significa que a série representa uma seção do rio **10 km abaixo** do ponto que a mensagem de alerta cita.
 
 3. **A cota não é medida, é derivada.** O GloFAS entrega vazão; a conversão para metros de régua usa um **mapeamento monotônico de percentis** sobre a escada oficial (p50→1,2 m; p90→3,0 m; p97→4,0 m; p99,3→6,0 m; p99,9→8,0 m). **Isso não é uma curva-chave.** A curva-chave oficial da estação (ANA / telemetria do AlertaBlu) substituiria isso e mudaria os números. Está declarado no código, no `metrics.json` e aqui.
 
-4. **O alerta chega ~10 horas atrasado.** Segundo o AlertaBlu, o rio cruzou a cota de inundação (8 m) na noite de 07/10. O pipeline cruza 8 m em 08/10 às 04:00 local, cerca de **10 h depois**. A causa é a fonte: o GloFAS é **diário**, e a reamostragem para passo horário (PCHIP) suaviza a subida. Num sistema de alerta, 10 h é a diferença entre avisar e não avisar. Não é defeito do código; é limitação do dado e é o motivo pelo qual a substituição pela telemetria de 15 min do AlertaBlu é o **próximo passo prioritário**.
+4. **O GloFAS diário não resolve cheias em sequência.** Das três enchentes
+   registradas pela Defesa Civil na janela analisada, o pipeline capturou
+   **apenas uma** (09/10, com 2,6 % de erro). A de 05/10 apareceu como 3,59 m
+   contra 8,78 m reais, e a de 12/10, a maior de outubro, 10,76 m, apareceu
+   como 6,35 m. A causa é a resolução temporal da fonte: o GloFAS entrega
+   **um valor por dia**, e a reamostragem para passo horário por interpolação
+   monotônica (PCHIP) funde picos separados por três ou quatro dias num único
+   hidrograma alargado. Não é atraso de alerta; é **perda de resolução**: a
+   série não tem como representar duas subidas rápidas em sequência.
+
+   Num sistema de alerta operacional isso é inaceitável, dois terços das
+   enchentes passariam despercebidas. É o motivo pelo qual substituir o GloFAS
+   pela telemetria de 15 minutos do AlertaBlu é o próximo passo prioritário
+   (§5.6), e é o que resolve de uma vez as limitações 2, 3 e 4.
 
 5. **ERA5 não é pluviômetro.** É reanálise, ~9 km, e subestima picos convectivos locais. Os pluviômetros reais do AlertaBlu dariam picos maiores.
 
