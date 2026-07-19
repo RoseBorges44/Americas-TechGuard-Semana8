@@ -434,7 +434,7 @@ delas, a de 12/10. Isso é analisado na limitação 4 da §5.5, e é a informaç
 mais importante desta validação: o método acerta a magnitude quando enxerga a
 cheia, mas a fonte de dados não enxerga todas.
 
-![Enchentes registradas — Defesa Civil de Blumenau](docs/prints/05_alertablu_enchentes_registradas.png)
+![Enchentes registradas — Defesa Civil de Blumenau](/outputs/outputs/figures/defesacivil.jpeg)
 
 *Fonte das cotas oficiais: [Proteção e Defesa Civil de Blumenau — Enchentes
 Registradas](https://defesacivil.blumenau.sc.gov.br/p/enchentes), consultada em
